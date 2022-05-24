@@ -1,9 +1,12 @@
 import express from "express";
 import expressApp from "./express-app";
 import env from "./config";
+import { databaseConnection } from "./database";
 
 const StartServer = async () => {
   const app = express();
+
+  await databaseConnection();
 
   await expressApp(app);
 
