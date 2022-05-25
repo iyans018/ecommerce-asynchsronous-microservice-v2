@@ -11,7 +11,7 @@ class ProductServices{
   async CreateProduct(inputUser, file){
     const { name, description, color, size, price, categories, stock } = inputUser;
     const { filename } = file;
-    const { error } = validateProduct(inputUser);
+    const { error } = validateProduct({ imageUrl: filename, ...inputUser });
 
     if (error) return FormateData(statusCodes.BAD_REQUEST, null, error.details[0].message);
 
@@ -53,7 +53,7 @@ class ProductServices{
     const { id } = params;
     const { name, description, color, size, price, categories, stock } = inputUser;
     const { filename } = file;
-    const { error } = validateProduct(inputUser);
+    const { error } = validateProduct({ imageUrl: filename, ...inputUser });
 
     if (error) return FormateData(statusCodes.BAD_REQUEST, null, error.details[0].message);
 
