@@ -49,8 +49,9 @@ class ProductServices{
     }
   }
 
-  async UpdateProduct(inputUser, file){
-    const { id, name, description, color, size, price, categories, stock } = inputUser;
+  async UpdateProduct(params, inputUser, file){
+    const { id } = params;
+    const { name, description, color, size, price, categories, stock } = inputUser;
     const { filename } = file;
     const { error } = validateProduct(inputUser);
 
@@ -65,6 +66,21 @@ class ProductServices{
       return FormateData(statusCodes.OK, updatedProduct, "Berhasil mengupdate product");
     } catch (error) {
       throw new Error('Failed to update the product');
+    }
+  }
+
+  async DeleteProduct(params) {
+    const { id } = params;
+
+    try {
+      const existingProduct = await this.repository.FindProductById({ id });
+      if (!existingProduct) return FormateData(statusCodes.NOT_FOUND, null, "Product tidak ditemukan");
+
+      const deletedProduct = await this.repository.DeleteProduct({ id });
+
+      return FormateData(statusCodes.OK, deletedProduct, "Berhasil menghapus product");
+    } catch (error) {
+      throw new Error('Failed to delete the product');
     }
   }
 }

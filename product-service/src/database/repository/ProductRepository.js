@@ -63,6 +63,16 @@ class ProductRepository{
       throw new Error('Cannot update the product');
     }
   }
+
+  async DeleteProduct({ id }){
+    try {
+      const deletedProduct = await ProductModel.findByIdAndDelete(id);
+
+      return deletedProduct;
+    } catch (error) {
+      throw new Error('Cannot delete the product');
+    }
+  }
 }
 
 export default ProductRepository;

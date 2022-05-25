@@ -37,7 +37,17 @@ export default (app) => {
 
   app.put("/product/:id", uploadImage.single("imageUrl"), async (req, res, next) => {
     try {
-      const { status, data, message } = await service.UpdateProduct(req.body, req.file);
+      const { status, data, message } = await service.UpdateProduct(req.params, req.body, req.file);
+
+      responseAPI(res, status, data, message);
+    } catch (error) {
+      next(error);
+    }
+  });
+
+  app.delete("/product/:id", async (req, res, next) => {
+    try {
+      const { status, data, message } = await service.DeleteProduct(req.params);
 
       responseAPI(res, status, data, message);
     } catch (error) {
