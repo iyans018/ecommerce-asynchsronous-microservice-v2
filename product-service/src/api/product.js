@@ -7,15 +7,6 @@ export default (app) => {
 
   app.post("/product", uploadImage.single("imageUrl"), async (req, res, next) => {
     try {
-      // const objectBody = {
-      //   name: req.body.name,
-      //   description: req.body.description,
-      //   color: req.body.color,
-      //   size: req.body.size,
-      //   price: req.body.price,
-      //   categories: [req.body.categories],
-      //   stock: req.body.stock,
-      // }
       const { status, data, message } = await service.CreateProduct(req.body, req.file);
 
       responseAPI(res, status, data, message);
@@ -37,6 +28,16 @@ export default (app) => {
   app.get("/product", async (req, res, next) => {
     try {
       const { status, data, message } = await service.ListAllProducts();
+
+      responseAPI(res, status, data, message);
+    } catch (error) {
+      next(error);
+    }
+  });
+
+  app.put("/product/:id", uploadImage.single("imageUrl"), async (req, res, next) => {
+    try {
+      const { status, data, message } = await service.UpdateProduct(req.body, req.file);
 
       responseAPI(res, status, data, message);
     } catch (error) {

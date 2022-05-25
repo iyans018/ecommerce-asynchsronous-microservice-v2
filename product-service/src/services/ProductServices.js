@@ -8,14 +8,18 @@ class ProductServices{
     this.repository = new ProductRepository();
   }
 
-  async CreateProduct(inputUser){
-    const { name, description, color, size, price, imageUrl, categories, stock } = inputUser;
+  async CreateProduct(inputUser, file){
+    const { name, description, color, size, price, categories, stock } = inputUser;
+    const { filename } = file;
     const { error } = validateProduct(inputUser);
 
     if (error) return FormateData(statusCodes.BAD_REQUEST, null, error.details[0].message);
 
     try {
-      const product = await this.repository.CreateProduct({ name, description, color, size, price, imageUrl, categories, stock });
+      const product = await this.repository.CreateProduct({ 
+        name, description, color, size, price, 
+        imageUrl: filename, categories, stock 
+      });
       
       return FormateData(statusCodes.OK, product, "Berhasil menambahkan product");
     } catch (error) {
@@ -42,6 +46,25 @@ class ProductServices{
       return FormateData(statusCodes.OK, existingProducts, "Berhasil mengambil list product");
     } catch (error) {
       throw new Error('Failed to get list all products');
+    }
+  }
+
+  async UpdateProduct(inputUser, file){
+    const { id, name, description, color, size, price, categories, stock } = inputUser;
+    const { filename } = file;
+    const { error } = validateProduct(inputUser);
+
+    if (error) return FormateData(statusCodes.BAD_REQUEST, null, error.details[0].message);
+
+    try {
+      const updatedProduct = await this.repository.UpdateProduct({ 
+        id, name, description, color, size, price, 
+        imageUrl: filename, categories, stock 
+      });
+
+      return FormateData(statusCodes.OK, updatedProduct, "Berhasil mengupdate product");
+    } catch (error) {
+      throw new Error('Failed to update the product');
     }
   }
 }

@@ -40,6 +40,29 @@ class ProductRepository{
       throw new Error('Cannot get list all products');
     }
   }
+
+  async UpdateProduct({ id, name, description, color, size, price, imageUrl, categories, stock }){
+    try {
+      const updatedProduct = await ProductModel.findByIdAndUpdate(
+        id, 
+        {
+          name,
+          description,
+          color,
+          size,
+          price,
+          imageUrl,
+          categories,
+          stock
+        },
+        { new: true }
+      );
+
+      return updatedProduct;
+    } catch (error) {
+      throw new Error('Cannot update the product');
+    }
+  }
 }
 
 export default ProductRepository;
