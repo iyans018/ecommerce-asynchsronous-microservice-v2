@@ -23,4 +23,24 @@ export default (app) => {
       next(error);
     }
   });
+
+  app.get("/product/:id", async (req, res, next) => {
+    try {
+      const { status, data, message } = await service.ReadProduct(req.params);
+
+      responseAPI(res, status, data, message);
+    } catch (error) {
+      next(error);
+    }
+  });
+
+  app.get("/product", async (req, res, next) => {
+    try {
+      const { status, data, message } = await service.ListAllProducts();
+
+      responseAPI(res, status, data, message);
+    } catch (error) {
+      next(error);
+    }
+  });
 }

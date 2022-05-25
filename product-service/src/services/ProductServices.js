@@ -22,6 +22,28 @@ class ProductServices{
       throw new Error('Failed to create the product');
     }
   }
+
+  async ReadProduct(params) {
+    const { id } = params;
+
+    try {
+      const existingProduct = await this.repository.FindProductById({ id });
+
+      return FormateData(statusCodes.OK, existingProduct, "Berhasil mengambil product");
+    } catch (error) {
+      throw new Error('Failed to get the product');
+    }
+  }
+
+  async ListAllProducts(){
+    try {
+      const existingProducts = await this.repository.FindAllProducts();
+
+      return FormateData(statusCodes.OK, existingProducts, "Berhasil mengambil list product");
+    } catch (error) {
+      throw new Error('Failed to get list all products');
+    }
+  }
 }
 
 export default ProductServices;
