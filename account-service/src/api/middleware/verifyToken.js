@@ -1,6 +1,5 @@
 import { responseAPI, verifyJWT } from "../../utils"
 import statusCodes from "../../utils/status-codes";
-import env from "../../config";
 
 export default (req, res, next) => {
   try {
@@ -10,7 +9,7 @@ export default (req, res, next) => {
       return responseAPI(res, statusCodes.UNAUTHORIZED, null, 'Access token tidak ditemukan');
     }
 
-    const { payload, message } = verifyJWT(accessToken, env.SECRET_KEY);
+    const { payload, message } = verifyJWT(accessToken);
 
     if (payload) {
       req.user = payload;
