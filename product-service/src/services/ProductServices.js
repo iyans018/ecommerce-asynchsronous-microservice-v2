@@ -83,6 +83,17 @@ class ProductServices{
       throw new Error('Failed to delete the product');
     }
   }
+
+  async CreateCart(userId) {
+    try {
+      const cart = await this.repository.CreateCart({ user: userId });
+      
+      return FormateData(statusCodes.OK, cart, "Berhasil menambahkan cart");
+    } catch (error) {
+      console.log(error);
+      throw new Error('Failed to create the cart');
+    }
+  }
 }
 
 export default ProductServices;

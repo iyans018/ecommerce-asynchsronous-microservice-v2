@@ -1,4 +1,4 @@
-import { ProductModel } from "../../database"
+import { ProductModel, CartModel } from "../../database"
 
 class ProductRepository{
   async CreateProduct({ name, description, color, size, price, imageUrl, categories, stock }){
@@ -71,6 +71,18 @@ class ProductRepository{
       return deletedProduct;
     } catch (error) {
       throw new Error('Cannot delete the product');
+    }
+  }
+
+  async CreateCart({ user }) {
+    try {
+      const cart = new CartModel({ user });
+      const cartResult = await cart.save();
+
+      return cartResult;
+    } catch (error) {
+      console.log(error);
+      throw new Error('Cannot create the cart');
     }
   }
 }

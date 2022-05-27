@@ -1,14 +1,19 @@
+import redis from "redis";
+
 import { AuthService } from "../services";
 import { verifyToken } from "./middleware";
 import { responseAPI } from "../utils";
 
 export default (app) => {
   const service = new AuthService();
+  const publisher = redis.createClient();
 
   app.post("/auth/register", async (req, res, next) => {
     try {
       const { firstName, lastName, email, password, gender } = req.body;
       const { status, data, message } = await service.Register({ firstName, lastName, email, password, gender });
+
+      publisher.publish('CREATE_CART', JSON.stringify({ id: data._id }));
 
       return responseAPI(res, status, data, message);
     } catch (error) {
