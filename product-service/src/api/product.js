@@ -54,4 +54,14 @@ export default (app) => {
       next(error);
     }
   });
+
+  app.get("/cart", async (req, res, next) => {
+    try {
+      const { status, data, message } = await service.ReadUserCart(req.user);
+
+      responseAPI(res, status, data, message);
+    } catch (error) {
+      next(error);  
+    }
+  });
 }

@@ -85,6 +85,16 @@ class ProductRepository{
       throw new Error('Cannot create the cart');
     }
   }
+
+  async FindUserCart({ user }) {
+    try {
+      const existingCart = await CartModel.findOne({ user });
+
+      return existingCart;
+    } catch (error) {
+      throw new Error('Cannot get the cart');
+    }
+  }
 }
 
 export default ProductRepository;

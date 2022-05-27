@@ -94,6 +94,18 @@ class ProductServices{
       throw new Error('Failed to create the cart');
     }
   }
+
+  async ReadUserCart(user) {
+    const { id } = user;
+
+    try {
+      const existingCart = await this.repository.FindUserCart({ user: id });
+
+      return FormateData(statusCodes.OK, existingCart, "Berhasil mengambil cart");
+    } catch (error) {
+      throw new Error('Failed to read user cart');
+    }
+  }
 }
 
 export default ProductServices;
