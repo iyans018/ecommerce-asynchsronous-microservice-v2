@@ -171,12 +171,12 @@ class AuthService {
       const existingUser = await this.repository.FindAccount({ email });
       if (!existingUser) return FormateData(statusCodes.BAD_REQUEST, null, "Email tidak terdaftar");
 
-      const token = this.repository.CreateToken({ user: existingUser._id, token: uuidv4()});
+      const token = await this.repository.CreateToken({ user: existingUser._id, token: uuidv4()});
 
       const message = `${env.BASE_URL}/reset-password/${existingUser._id}/${token.token}`;
       await sendEmail(existingUser.email, "Reset Password", message);
 
-      return FormateData(statusCodes.OK, null, "Silahkan cek email anda untuk melakukan reset password");
+      return FormateData(statusCodes.OK, token, "Silahkan cek email anda untuk melakukan reset password");
     } catch (error) {
       throw new Error('Failed to request forgot password');
     }
@@ -193,8 +193,8 @@ class AuthService {
       const existingUser = await this.repository.FindAccountById(id);
       if (!existingUser) return FormateData(statusCodes.BAD_REQUEST, null, "User tidak ditemukan");
 
-      const existingToken = await this.repository.FindToken({ user: id });
-      if (!existingToken || existingToken.token !== token) return FormateData(statusCodes.BAD_REQUEST, null, "Token tidak ditemukan atau tidak valid");
+      const existingToken = await this.repository.FindToken({ token: token });
+      if (!existingToken) return FormateData(statusCodes.BAD_REQUEST, null, "Token tidak valid");
 
       const salt = await generateSalt();
       const hashedPassword = await hashPassword(password, salt);

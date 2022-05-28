@@ -114,9 +114,9 @@ class AccountRepository{
     }
   }
 
-  async FindToken({ user }) {
+  async FindToken({ user, token }) {
     try {
-      const existingToken = await TokenModel.findOne({ user });
+      const existingToken = await TokenModel.findOne({ $or: [{ user }, { token }] });
 
       return existingToken;
     } catch (error) {
