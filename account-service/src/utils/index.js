@@ -39,7 +39,7 @@ const verifyJWT = (token) => {
 }
 
 const verifyRefreshToken = (token) => {
-  return token.expiryDate.getTime() < new Date().getTime();
+  return token.expiryDate.getTime() > new Date().getTime();
 }
 
 const sendEmail = async (email, subject, text) => {

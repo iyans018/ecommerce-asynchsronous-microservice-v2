@@ -208,8 +208,8 @@ class AuthService {
     }
   }
 
-  async RefreshToken(userInpus) {
-    const { token } = userInpus;
+  async RefreshToken(userInputs) {
+    const { token } = userInputs;
     if (!token) return FormateData(statusCodes.BAD_REQUEST, null, "Token tidak boleh kosong");
 
     try {
