@@ -148,6 +148,7 @@ class ProductServices{
 
       return FormateData(statusCodes.OK, updatedCart, "Berhasil menghapus product dari cart");
     } catch (error) {
+      console.log(error);
       throw new Error('Failed to remove product from cart');
     }
   }

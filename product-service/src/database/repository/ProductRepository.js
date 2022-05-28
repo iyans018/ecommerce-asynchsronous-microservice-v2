@@ -109,7 +109,6 @@ class ProductRepository{
 
       return existingProductInCart;
     } catch (error) {
-      console.log(error);
       throw new Error('Cannot find item in cart');
     }
   }
@@ -132,7 +131,6 @@ class ProductRepository{
       );
       return cart;
     } catch (error) {
-      console.log(error);
       throw new Error('Cannot add item to cart');
     }
   }
@@ -155,14 +153,13 @@ class ProductRepository{
     try {
       const cart = await CartModel.findOneAndUpdate(
         { user },
-        { $pull: { products: { id: productId } } },
-        false,
-        true,
+        { $pull: { products: { product: productId } } },
         { new: true }
       );
 
       return cart;
     } catch (error) {
+      console.log(error);
       throw new Error('Cannot remove item from cart');
     }
   }
