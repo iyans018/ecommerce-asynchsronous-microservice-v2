@@ -135,14 +135,17 @@ class ProductRepository{
     }
   }
 
-  async UpdateProductQuantityInCart(user, { productId, quantity }) {
+  // @params type: "increase" or "decrease" 
+  async UpdateProductQuantityInCart(user, { productId, quantity }, type) {
     try {
       const productItemInCart = await this.FindProductItemInCart(user, { productId });
+      const quantityToUpdate = type === "increase" ? productItemInCart.quantity + quantity : productItemInCart.quantity - quantity;
       const cart = await CartModel.findOneAndUpdate(
         { user, "products.product": productId },
-        { $set: { "products.$.quantity": productItemInCart.quantity + quantity } },
+        { $set: { "products.$.quantity": quantityToUpdate } },
         { new: true }
       );
+      
       return cart;
     } catch (error) {
       throw new Error('Cannot update product quantity in cart');
@@ -159,7 +162,6 @@ class ProductRepository{
 
       return cart;
     } catch (error) {
-      console.log(error);
       throw new Error('Cannot remove item from cart');
     }
   }

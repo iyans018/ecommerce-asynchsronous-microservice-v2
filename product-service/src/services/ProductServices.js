@@ -121,7 +121,7 @@ class ProductServices{
       const isItemExistInCart = await this.repository.FindProductItemInCart(id, { productId });
       
       if (isItemExistInCart) {
-        cart = await this.repository.UpdateProductQuantityInCart(id, { productId, quantity });
+        cart = await this.repository.UpdateProductQuantityInCart(id, { productId, quantity }, "increase");
       } else {
         const dataProductToAdd = {
           product: productId,
@@ -148,24 +148,37 @@ class ProductServices{
 
       return FormateData(statusCodes.OK, updatedCart, "Berhasil menghapus product dari cart");
     } catch (error) {
-      console.log(error);
       throw new Error('Failed to remove product from cart');
     }
   }
 
-  // async IncreaseProductQuantityCart(params, user) {
-  //   const { productId } = params;
-  //   const { id } = user;
+  async IncreaseProductQuantityCart(params, user) {
+    const { productId } = params;
+    const { id } = user;
     
-  //   try {
-  //     const cart = await this.repository.FindUserCart({ user: id });
-  //     const cartProducts = cart.products.map(product => product);
-
+    try {
+      const updatedCart = await this.repository.UpdateProductQuantityInCart(id, { productId, quantity: 1 }, "increase");
       
-  //   } catch (error) {
-  //     throw new Error('Failed to increase product quantity cart');
-  //   }
-  // }
+      return FormateData(statusCodes.OK, updatedCart, "Berhasil menambahkan quantity product di cart");
+    } catch (error) {
+      console.log(error)
+      throw new Error('Failed to increase product quantity cart');
+    }
+  }
+
+  async DecreaseProductQuantityCart(params, user) {
+    const { productId } = params;
+    const { id } = user;
+    
+    try {
+      const updatedCart = await this.repository.UpdateProductQuantityInCart(id, { productId, quantity: 1 }, "decrease");
+      
+      return FormateData(statusCodes.OK, updatedCart, "Berhasil menambahkan quantity product di cart");
+    } catch (error) {
+      console.log(error)
+      throw new Error('Failed to increase product quantity cart');
+    }
+  }
 }
 
 export default ProductServices;

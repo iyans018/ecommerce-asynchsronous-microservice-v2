@@ -82,5 +82,25 @@ export default (app) => {
     } catch (error) {
       next(error);
     }
-  })
+  });
+
+  app.put("/cart/:id/:productId/plus", verifyToken, async (req, res, next) => {
+    try {
+      const { status, data, message } = await service.IncreaseProductQuantityCart(req.params, req.user);
+
+      responseAPI(res, status, data, message); 
+    } catch (error) {
+      next(error);
+    }
+  });
+
+  app.put("/cart/:id/:productId/minus", verifyToken, async (req, res, next) => {
+    try {
+      const { status, data, message } = await service.DecreaseProductQuantityCart(req.params, req.user);
+      
+      responseAPI(res, status, data, message); 
+    } catch (error) {
+      next(error);
+    }
+  });
 }
