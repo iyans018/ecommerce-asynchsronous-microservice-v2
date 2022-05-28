@@ -151,11 +151,12 @@ class AuthService {
         return FormateData(statusCodes.BAD_REQUEST, null, "Link aktivasi anda masih aktif");
       }
 
-      const message = `${env.BASE_URL}/activate/${user._id}/${token.token}`;
-      await sendEmail(user.email, "Aktivasi Akun", message);
+      const message = `${env.BASE_URL}/activate/${existingAccount._id}/${token.token}`;
+      await sendEmail(existingAccount.email, "Aktivasi Akun", message);
 
-      return FormateData(statusCodes.OK, null, "Link aktivasi berhasil dikirimkan ke email anda");
+      return FormateData(statusCodes.OK, token, "Link aktivasi berhasil dikirimkan ke email anda");
     } catch (error) {
+      console.log(error);
       throw new Error('Cannot resend activation');
     }
   }
