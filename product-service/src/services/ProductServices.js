@@ -106,6 +106,65 @@ class ProductServices{
       throw new Error('Failed to read user cart');
     }
   }
+
+  async AddProductToCart(params, inputUser, user) {
+    const { productId } = params;
+    const { quantity } = inputUser;
+    const { id } = user;
+
+    if(!quantity) return FormateData(statusCodes.BAD_REQUEST, null, "Quantity tidak boleh kosong");
+
+    try {
+      const existingProduct = await this.repository.FindProductById({ id: productId });
+      let cart;
+      
+      const isItemExistInCart = await this.repository.FindProductItemInCart(id, { productId });
+      
+      if (isItemExistInCart) {
+        cart = await this.repository.UpdateProductQuantityInCart(id, { productId, quantity });
+      } else {
+        const dataProductToAdd = {
+          product: productId,
+          quantity,
+          price: existingProduct.price,
+          totalPrice: existingProduct.price * quantity,
+        };
+        cart = await this.repository.AddProductToCart(id, dataProductToAdd);
+      }
+
+      return FormateData(statusCodes.OK, cart, "Berhasil menambahkan product ke cart");
+    } catch (error) {
+      console.log(error);
+      throw new Error('Failed to add product to cart');
+    }
+  }
+
+  async RemoveProductFromCart(params, user) {
+    const { productId } = params;
+    const { id } = user;
+
+    try {
+      const updatedCart = await this.repository.RemoveProductFromCart(id, { productId });
+
+      return FormateData(statusCodes.OK, updatedCart, "Berhasil menghapus product dari cart");
+    } catch (error) {
+      throw new Error('Failed to remove product from cart');
+    }
+  }
+
+  // async IncreaseProductQuantityCart(params, user) {
+  //   const { productId } = params;
+  //   const { id } = user;
+    
+  //   try {
+  //     const cart = await this.repository.FindUserCart({ user: id });
+  //     const cartProducts = cart.products.map(product => product);
+
+      
+  //   } catch (error) {
+  //     throw new Error('Failed to increase product quantity cart');
+  //   }
+  // }
 }
 
 export default ProductServices;

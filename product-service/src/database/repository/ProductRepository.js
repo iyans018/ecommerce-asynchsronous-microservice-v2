@@ -95,6 +95,77 @@ class ProductRepository{
       throw new Error('Cannot get the cart');
     }
   }
+
+  async FindProductItemInCart(user, { productId }) {
+    try {
+      const cart = await CartModel.findOne({ user, "products.product": productId });
+      
+      if (!cart) return null
+
+      const productsInCart = cart.products.map(product => product);
+      const existingProductInCart = productsInCart.find(product => {
+        return product.product.toString() === productId;
+      });
+
+      return existingProductInCart;
+    } catch (error) {
+      console.log(error);
+      throw new Error('Cannot find item in cart');
+    }
+  }
+
+  async AddProductToCart(user, { product, quantity, price, totalPrice }) {
+    try {
+      const cart = await CartModel.findOneAndUpdate(
+        { user }, 
+        {
+          $push: {
+            products: {
+              product,
+              quantity,
+              price,
+              totalPrice
+            }
+          }
+        },
+        { new: true }
+      );
+      return cart;
+    } catch (error) {
+      console.log(error);
+      throw new Error('Cannot add item to cart');
+    }
+  }
+
+  async UpdateProductQuantityInCart(user, { productId, quantity }) {
+    try {
+      const productItemInCart = await this.FindProductItemInCart(user, { productId });
+      const cart = await CartModel.findOneAndUpdate(
+        { user, "products.product": productId },
+        { $set: { "products.$.quantity": productItemInCart.quantity + quantity } },
+        { new: true }
+      );
+      return cart;
+    } catch (error) {
+      throw new Error('Cannot update product quantity in cart');
+    }
+  }
+
+  async RemoveProductFromCart(user, { productId }) {
+    try {
+      const cart = await CartModel.findOneAndUpdate(
+        { user },
+        { $pull: { products: { id: productId } } },
+        false,
+        true,
+        { new: true }
+      );
+
+      return cart;
+    } catch (error) {
+      throw new Error('Cannot remove item from cart');
+    }
+  }
 }
 
 export default ProductRepository;

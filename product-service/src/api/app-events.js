@@ -12,7 +12,10 @@ export default () => {
       case "CREATE_CART":
         const { id } = JSON.parse(message);
         const { data } = await service.CreateCart(mongoose.Types.ObjectId(id));
-        console.log(data);
+        if (data) {
+          console.log("Cart created");
+          console.log(data);
+        }
         break;
     }
   });

@@ -1,11 +1,11 @@
 import { ProductServices } from "../services";
 import { responseAPI } from "../utils";
-import { uploadImage } from "./middleware";
+import { uploadImage, verifyToken, isAdmin } from "./middleware";
 
 export default (app) => {
   const service = new ProductServices();
 
-  app.post("/product", uploadImage.single("imageUrl"), async (req, res, next) => {
+  app.post("/product", verifyToken, isAdmin, uploadImage.single("imageUrl"), async (req, res, next) => {
     try {
       const { status, data, message } = await service.CreateProduct(req.body, req.file);
 
@@ -35,7 +35,7 @@ export default (app) => {
     }
   });
 
-  app.put("/product/:id", uploadImage.single("imageUrl"), async (req, res, next) => {
+  app.put("/product/:id", verifyToken, isAdmin, uploadImage.single("imageUrl"), async (req, res, next) => {
     try {
       const { status, data, message } = await service.UpdateProduct(req.params, req.body, req.file);
 
@@ -45,7 +45,7 @@ export default (app) => {
     }
   });
 
-  app.delete("/product/:id", async (req, res, next) => {
+  app.delete("/product/:id", verifyToken, isAdmin, async (req, res, next) => {
     try {
       const { status, data, message } = await service.DeleteProduct(req.params);
 
@@ -55,7 +55,7 @@ export default (app) => {
     }
   });
 
-  app.get("/cart", async (req, res, next) => {
+  app.get("/cart", verifyToken, async (req, res, next) => {
     try {
       const { status, data, message } = await service.ReadUserCart(req.user);
 
@@ -64,4 +64,23 @@ export default (app) => {
       next(error);  
     }
   });
+
+  app.put("/cart/:id/:productId/add", verifyToken, async (req, res, next) => {
+    try {
+      const { status, data, message } = await service.AddProductToCart(req.params, req.body, req.user);
+
+      responseAPI(res, status, data, message);
+    } catch (error) {
+      next(error);
+    }
+  });
+
+  app.put("/cart/:id/:productId/remove", verifyToken, async (req, res, next) => {
+    try {
+      const { status, data, message } = await service.RemoveProductFromCart(req.params, req.user);
+      responseAPI(res, status, data, message);
+    } catch (error) {
+      next(error);
+    }
+  })
 }
