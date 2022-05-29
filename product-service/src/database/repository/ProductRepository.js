@@ -142,7 +142,12 @@ class ProductRepository{
       const quantityToUpdate = type === "increase" ? productItemInCart.quantity + quantity : productItemInCart.quantity - quantity;
       const cart = await CartModel.findOneAndUpdate(
         { user, "products.product": productId },
-        { $set: { "products.$.quantity": quantityToUpdate } },
+        { 
+          $set: { 
+            "products.$.quantity": quantityToUpdate, 
+            "products.$.totalPrice": quantityToUpdate * productItemInCart.price
+          }
+        },
         { new: true }
       );
       
