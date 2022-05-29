@@ -38,10 +38,48 @@ class ProductServices{
 
     try {
       const order = await this.repository.ReadOrder({ id });
-      
+
       return FormateData(statusCodes.OK, order, "Berhasil mengambil data order");
     } catch (error) {
       throw new Error('Failed to read an order');
+    }
+  }
+
+  async ListUserOrders(user) {
+    const { id } = user;
+
+    try {
+      const orders = await this.repository.ListUserOrders({ user: id });
+
+      return FormateData(statusCodes.OK, orders, "Berhasil mengambil list user orders");
+    } catch (error) {
+      throw new Error('Failed to get list user orders');
+    }
+  }
+
+  async UpdateStatusOrder(params, userInputs) {
+    const { id } = params;
+    const { status } = userInputs;
+
+    if (!status) return FormateData(statusCodes.BAD_REQUEST, null, "Status tidak boleh kosong");
+
+    try {
+      const order = await this.repository.UpdateStatusOrder(id, { status });
+      return FormateData(statusCodes.OK, order, "Berhasil mengubah status order");
+    } catch (error) {
+      throw new Error('Failed to update status order');
+    }
+  }
+
+  async CancelOrder(params) {
+    const { id } = params;
+    const status = 0;
+
+    try {
+      const order = await this.repository.UpdateStatusOrder(id, { status });
+      return FormateData(statusCodes.OK, order, "Berhasil cancel order");
+    } catch (error) {
+      throw new Error('Failed to cancel order');
     }
   }
 }

@@ -21,6 +21,28 @@ class ProductRepository{
       throw new Error('Cannot read an order');
     }
   }
+
+  async ListUserOrders({ user }) {
+    try {
+      const existingUserOrders = await OrderModel.find({ user });
+
+      return existingUserOrders;
+    } catch (error) {
+      throw new Error('Cannot list user orders');
+    }
+  }
+
+  async UpdateStatusOrder(id, { status }) {
+    try {
+      const existingOrder = await OrderModel.findById(id);
+      existingOrder.status = status;
+      const updatedOrder = await existingOrder.save();
+      
+      return updatedOrder;
+    } catch (error) {
+      throw new Error('Cannot update status order');
+    }
+  }
 }
 
 export default ProductRepository;
