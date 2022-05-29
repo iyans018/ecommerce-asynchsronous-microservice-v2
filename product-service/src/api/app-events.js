@@ -11,16 +11,25 @@ export default () => {
     switch (channel) {
       case "CREATE_CART":
         const { id } = JSON.parse(message);
-        const { data } = await service.CreateCart(mongoose.Types.ObjectId(id));
-        if (data) {
+        const createCart = await service.CreateCart(mongoose.Types.ObjectId(id));
+        if (createCart.data) {
           console.log("Cart created");
-          console.log(data);
+          console.log(createCart.data);
+        }
+        break;
+      case "EMPTY_CART":
+        const { cart } = JSON.parse(message);
+        const emptyCart = await service.EmptyProductsInCart(mongoose.Types.ObjectId(cart));
+        if (emptyCart.data) {
+          console.log("Cart emptied");
+          console.log(emptyCart.data);
         }
         break;
     }
   });
 
   subscriber.subscribe("CREATE_CART");
+  subscriber.subscribe("EMPTY_CART");
 
   return subscriber;
 }

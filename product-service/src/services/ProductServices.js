@@ -179,6 +179,17 @@ class ProductServices{
       throw new Error('Failed to increase product quantity cart');
     }
   }
+
+  async EmptyProductsInCart(cartId) {
+    try {
+      const updatedCart = await this.repository.EmptyProductCart({ id: cartId });
+      
+      return FormateData(statusCodes.OK, updatedCart, "Berhasil mengosongkan cart");
+    } catch (error) {
+      console.log(error);
+      throw new Error('Failed to empty products in cart');
+    }
+  }
 }
 
 export default ProductServices;

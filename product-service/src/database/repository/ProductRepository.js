@@ -170,6 +170,17 @@ class ProductRepository{
       throw new Error('Cannot remove item from cart');
     }
   }
+
+  async EmptyProductCart({ id }) {
+    try {
+      const updatedCart = await CartModel.findByIdAndUpdate(id, { products: [] }, { new: true });
+
+      return updatedCart;
+    } catch (error) {
+      console.log(error);
+      throw new Error('Cannot empty cart');
+    }
+  }
 }
 
 export default ProductRepository;
