@@ -19,4 +19,14 @@ export default (app) => {
       next(error)
     }
   });
+
+  app.get("/order/:id", verifyToken, async (req, res, next) => {
+    try {
+      const { status, data, message } = await service.ReadOrder(req.params);
+
+      return responseAPI(res, status, data, message);
+    } catch (error) {
+      next(error)
+    }
+  });
 }

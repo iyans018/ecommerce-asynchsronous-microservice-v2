@@ -11,6 +11,16 @@ class ProductRepository{
       throw new Error('Cannot create an order');
     }
   }
+
+  async ReadOrder({ id }) {
+    try {
+      const existingOrder = await OrderModel.findById(id);
+
+      return existingOrder;
+    } catch (error) {
+      throw new Error('Cannot read an order');
+    }
+  }
 }
 
 export default ProductRepository;

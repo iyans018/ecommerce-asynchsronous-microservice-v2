@@ -32,6 +32,18 @@ class ProductServices{
       throw new Error('Failed to create an order');
     }
   }
+
+  async ReadOrder(params) {
+    const { id } = params;
+
+    try {
+      const order = await this.repository.ReadOrder({ id });
+      
+      return FormateData(statusCodes.OK, order, "Berhasil mengambil data order");
+    } catch (error) {
+      throw new Error('Failed to read an order');
+    }
+  }
 }
 
 export default ProductServices;
