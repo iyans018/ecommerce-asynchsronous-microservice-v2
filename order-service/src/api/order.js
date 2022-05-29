@@ -5,9 +5,11 @@ import { uploadImage, verifyToken, isAdmin } from "./middleware";
 export default (app) => {
   const service = new OrderServices();
 
-  app.get("/", (req, res) => {
+  app.post("/order", verifyToken, async (req, res, next) => {
     try {
-      responseAPI(res, 200, { name: "Oktavian Aji" }, "Berhasil");
+      const { status, data, message } = await service.CreateOrder(req.user, req.body);
+
+      return responseAPI(res, status, data, message);
     } catch (error) {
       next(error)
     }
