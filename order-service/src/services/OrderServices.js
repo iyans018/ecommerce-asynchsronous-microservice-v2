@@ -3,7 +3,7 @@ import { FormateData } from "../utils";
 import { validateOrder } from "../utils/validation";
 import statusCodes from "../utils/status-codes";
 
-class ProductServices{
+class OrderServices{
   constructor() {
     this.repository = new OrderRepository();
   }
@@ -84,4 +84,4 @@ class ProductServices{
   }
 }
 
-export default ProductServices;
+export default OrderServices;

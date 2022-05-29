@@ -1,6 +1,6 @@
 import { OrderModel } from "../../database"
 
-class ProductRepository{
+class OrderRepository{
   async CreateOrder(order){
     try{
       const newOrder = new OrderModel(order);
@@ -45,4 +45,4 @@ class ProductRepository{
   }
 }
 
-export default ProductRepository;
+export default OrderRepository;

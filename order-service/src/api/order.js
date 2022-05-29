@@ -2,7 +2,7 @@ import redis from "redis";
 
 import { OrderServices } from "../services";
 import { responseAPI } from "../utils";
-import { uploadImage, verifyToken, isAdmin } from "./middleware";
+import { verifyToken, isAdmin } from "./middleware";
 
 export default (app) => {
   const service = new OrderServices();
