@@ -8,7 +8,15 @@ export default (app) => {
   const service = new PaymentServices();
   const publisher = redis.createClient();
 
-  app.get("/", (req, res, next) => {
-    return responseAPI(res, 200, { message: "Hello World" }, "Mantabs");
+  app.post("/payment", async (req, res, next) => {
+    try {
+      const { status, data, message } = await service.CreatePayment(req.body);
+
+      publisher.publish("ORDER_PAID", JSON.stringify({ order: data.order }));
+
+      return responseAPI(res, status, data, message);
+    } catch (error) {
+      next(error);
+    }
   });
 }

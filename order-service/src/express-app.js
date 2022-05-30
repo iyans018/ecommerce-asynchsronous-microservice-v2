@@ -2,7 +2,7 @@ import express from "express";
 import cors from "cors";
 import path from "path";
 
-import { order } from "./api";
+import { order, appEvents } from "./api";
 
 export default async (app) => {
   const __dirname = path.resolve();
@@ -13,4 +13,5 @@ export default async (app) => {
   app.use(express.static(__dirname + '/public'));
 
   order(app);
+  appEvents();
 }
