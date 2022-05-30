@@ -12,7 +12,29 @@ export default (app) => {
     try {
       const { status, data, message } = await service.CreatePayment(req.body);
 
-      publisher.publish("ORDER_PAID", JSON.stringify({ order: data.order }));
+      return responseAPI(res, status, data, message);
+    } catch (error) {
+      next(error);
+    }
+  });
+
+  app.put("/payment/:id", async (req, res, next) => {
+    try {
+      const { status, data, message } = await service.UpdatePayment(req.params, req.body);
+
+      if (data.status === 1) {
+        publisher.publish("ORDER_PAID", JSON.stringify({ order: data.order }));
+      }
+
+      return responseAPI(res, status, data, message);
+    } catch (error) {
+      next(error);
+    }
+  });
+
+  app.get("/payment/:orderId", async (req, res, next) => {
+    try {
+      const { status, data, message } = await service.ReadPaymentByOrder(req.params);
 
       return responseAPI(res, status, data, message);
     } catch (error) {

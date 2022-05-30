@@ -28,6 +28,33 @@ class PaymentServices{
       throw new Error('Failed to create payment');
     }
   }
+
+  async UpdatePayment(params, userInputs) {
+    const { id } = params;
+    const { status } = userInputs;
+
+    if (!status) return FormateData(statusCodes.BAD_REQUEST, null, "Status harus diisi");
+
+    try {
+      const updatedPayment = await this.repository.UpdatePaymentStatus({ id, status });
+
+      return FormateData(statusCodes.OK, updatedPayment, "Berhasil memperbarui data payment");
+    } catch (error) {
+      throw new Error('Failed to update payment');
+    }
+  }
+
+  async ReadPaymentByOrder(params) {
+    const { orderId } = params;
+
+    try {
+      const existingPayment = await this.repository.ReadPaymentByOrder({ orderId });
+
+      return FormateData(statusCodes.OK, existingPayment, "Berhasil mendapatkan data payment berdasarkan order");
+    } catch (error) {
+      throw new Error('Failed to read payment by order');
+    }
+  }
 }
 
 export default PaymentServices;
