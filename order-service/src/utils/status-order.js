@@ -1,6 +1,7 @@
 export default {
   BATAL: 0,
   MENUNGGU_PEMBAYARAN: 1,
-  DIKIRIM: 2,
-  SELESAI: 3,
+  DIKEMAS: 2,
+  DIKIRIM: 3,
+  SELESAI: 4,
 }
