@@ -15,7 +15,7 @@ const PaymentSchema = new Schema({
     postalCode: { type: String },
     phoneNumber: { type: String }
   },
-  status: { type: Number, default: 1 },
+  status: { type: Number, default: 0 },
 }, { timestamps: true });
 
 const Payment = mongoose.model("Payment", PaymentSchema);
