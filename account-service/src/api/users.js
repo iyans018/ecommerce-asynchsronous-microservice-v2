@@ -35,7 +35,7 @@ export default (app) => {
     }
   });
 
-  app.post("/users/:id/avatar", verifyToken, uploadImage.single("avatar"), async (req, res, next) => {
+  app.put("/users/:id/avatar", verifyToken, uploadImage.single("avatar"), async (req, res, next) => {
     try {
       const { status, data, message } = await service.UpdateAvatar(req.params, req.user, req.file);
 
@@ -64,11 +64,11 @@ export default (app) => {
       next(error);
     }
   });
-  
+
   app.get("/address", verifyToken, async (req, res, next) => {
     try {
       const { status, data, message } = await service.ReadAddresses(req.user);
-      
+
       return responseAPI(res, status, data, message);
     } catch (error) {
       next(error);

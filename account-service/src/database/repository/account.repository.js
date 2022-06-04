@@ -11,7 +11,7 @@ class AccountRepository{
         gender
       });
       const userResult = await user.save();
-  
+
       return userResult;
     } catch (error) {
       throw new Error('Cannot create an account');
@@ -32,7 +32,7 @@ class AccountRepository{
     try {
       const existingAccount = await UserModel.findById(id);
 
-      return existingAccount;  
+      return existingAccount;
     } catch (error) {
       throw new Error('Cannot find account');
     }
@@ -103,9 +103,9 @@ class AccountRepository{
     }
   }
 
-  async CreateToken({ user, token }) {
+  async CreateToken({ user, token, type }) {
     try {
-      const createToken = new TokenModel({ user, token });
+      const createToken = new TokenModel({ user, token, type });
       const tokenResult = await createToken.save();
 
       return tokenResult;
@@ -114,9 +114,9 @@ class AccountRepository{
     }
   }
 
-  async FindToken({ user, token }) {
+  async FindToken({ user, token, type }) {
     try {
-      const existingToken = await TokenModel.findOne({ $or: [{ user }, { token }] });
+      const existingToken = await TokenModel.findOne({ $or: [{ user }, { token }], type });
 
       return existingToken;
     } catch (error) {

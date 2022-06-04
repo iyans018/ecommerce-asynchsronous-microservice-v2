@@ -4,10 +4,11 @@ const Schema = mongoose.Schema;
 const TokenSchema = new Schema({
   user: { type: Schema.Types.ObjectId, ref: 'User' },
   token: { type: String },
-  createdAt: { 
+  type: { type: String, enum: ['activation', 'reset-password'] },
+  createdAt: {
     type: Date,
     default: Date.now,
-    expires: 3600 
+    expires: 3600
   },
 });
 

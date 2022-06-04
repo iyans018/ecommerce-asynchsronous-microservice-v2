@@ -2,7 +2,7 @@ import { v4 as uuidv4 } from 'uuid';
 
 import { AccountRepository } from "../database";
 import { FormateData, generateSalt, sendEmail, hashPassword, signJWT, comparePassword, verifyRefreshToken } from "../utils";
-import { 
+import {
   validateUser, validateLogin, validateForgotPassword, validateResetPassword,
   validateChangePassword
 } from "../utils/validation";
@@ -14,13 +14,13 @@ class AuthService {
   constructor(){
     this.repository = new AccountRepository();
   }
-  
+
   async Register(userInputs) {
     const { email, password, firstName, lastName, gender } = userInputs;
     const { error } = validateUser(userInputs);
 
     if (error) return FormateData(statusCodes.BAD_REQUEST, null, error.details[0].message);
-    
+
     try {
       const existingAccount = await this.repository.FindAccount({ email });
       if (existingAccount) return FormateData(statusCodes.BAD_REQUEST, null, "Pengguna sudah terdaftar");
@@ -36,8 +36,10 @@ class AuthService {
       });
 
       let token = await this.repository.FindToken({ user: user._id });
-      if (!token) { 
-        token = await this.repository.CreateToken({ user: user._id, token: uuidv4()});
+      if (!token) {
+        token = await this.repository.CreateToken({ user: user._id, token: uuidv4(), type: "activation" });
+      } else {
+        return FormateData(statusCodes.BAD_REQUEST, null, "Token sudah ada");
       }
 
       const message = `${env.BASE_URL}/activate/${user._id}/${token.token}`;
@@ -105,8 +107,8 @@ class AuthService {
     }
   }
 
-  async Activate(userInputs) {
-    const { id, token } = userInputs;
+  async Activate(params) {
+    const { id, token } = params;
 
     try {
       const existingAccount = await this.repository.FindAccountById(id);
@@ -145,8 +147,8 @@ class AuthService {
       if (!existingAccount) return FormateData(statusCodes.BAD_REQUEST, null, "User tidak ditemukan");
 
       let token = await this.repository.FindToken({ user: existingAccount._id });
-      if (!token) { 
-        token = await this.repository.CreateToken({ user: existingAccount._id, token: uuidv4()});
+      if (!token) {
+        token = await this.repository.CreateToken({ user: existingAccount._id, token: uuidv4(), type: "activation" });
       } else {
         return FormateData(statusCodes.BAD_REQUEST, null, "Link aktivasi anda masih aktif");
       }
@@ -171,7 +173,7 @@ class AuthService {
       const existingUser = await this.repository.FindAccount({ email });
       if (!existingUser) return FormateData(statusCodes.BAD_REQUEST, null, "Email tidak terdaftar");
 
-      const token = await this.repository.CreateToken({ user: existingUser._id, token: uuidv4()});
+      const token = await this.repository.CreateToken({ user: existingUser._id, token: uuidv4(), type: "reset-password" });
 
       const message = `${env.BASE_URL}/reset-password/${existingUser._id}/${token.token}`;
       await sendEmail(existingUser.email, "Reset Password", message);
@@ -186,14 +188,14 @@ class AuthService {
     const { id, token } = params;
     const { password } = userInputs;
     const { error } = validateResetPassword(userInputs);
-    
+
     if (error) return FormateData(statusCodes.BAD_REQUEST, null, error.details[0].message);
 
     try {
       const existingUser = await this.repository.FindAccountById(id);
       if (!existingUser) return FormateData(statusCodes.BAD_REQUEST, null, "User tidak ditemukan");
 
-      const existingToken = await this.repository.FindToken({ token: token });
+      const existingToken = await this.repository.FindToken({ token: token, type: "reset-password" });
       if (!existingToken) return FormateData(statusCodes.BAD_REQUEST, null, "Token tidak valid");
 
       const salt = await generateSalt();
@@ -220,7 +222,7 @@ class AuthService {
       if (!isTokenValid){
         await this.repository.DeleteRefreshToken({ _id: existingRefreshToken._id });
         return FormateData(statusCodes.BAD_REQUEST, null, "Token sudah kadaluarsa");
-      } 
+      }
 
       const payloadAccessToken = {
         id: existingRefreshToken.user._id,

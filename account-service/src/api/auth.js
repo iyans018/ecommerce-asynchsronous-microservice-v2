@@ -28,15 +28,15 @@ export default (app) => {
    *                  password:
    *                    type: string
    *                    example: johndoe123
-   *        400:
-   *          description: Pengguna sudah terdaftar
   */
   app.post("/auth/register", async (req, res, next) => {
     try {
       const { firstName, lastName, email, password, gender } = req.body;
       const { status, data, message } = await service.Register({ firstName, lastName, email, password, gender });
 
-      publisher.publish('CREATE_CART', JSON.stringify({ id: data._id }));
+      if (data) {
+        publisher.publish('CREATE_CART', JSON.stringify({ id: data._id }));
+      }
 
       return responseAPI(res, status, data, message);
     } catch (error) {

@@ -48,12 +48,16 @@ class UserService {
   async UpdateAvatar(params, user, file){
     const isRealUser = params.id === user.id;
     if (!isRealUser) return FormateData(statusCodes.UNAUTHORIZED, null, "Anda hanya dapat mengubah data anda sendiri");
+    if (!file) return FormateData(statusCodes.BAD_REQUEST, null, "File tidak ditemukan");
 
     try {
+      console.log(file);
+
       const updatedUser = await this.repository.UpdateAccount({ _id: user.id, avatar: file.filename });
 
       return FormateData(statusCodes.OK, updatedUser, "Berhasil update avatar");
     } catch (error) {
+      console.log(error);
       throw new Error("Failed to upload avatar image");
     }
   }
