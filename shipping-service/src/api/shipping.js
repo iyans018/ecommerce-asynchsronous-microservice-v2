@@ -8,9 +8,11 @@ export default (app) => {
   const service = new ShippingServices();
   const publisher = redis.createClient();
 
-  app.post("/shipping", verifyToken, async (req, res, next) => {
+  app.post("/", verifyToken, async (req, res, next) => {
     try {
       const { status, data, message } = await service.CreateShipping(req.user, req.body);
+
+      if (data) publisher.publish("ORDER_SENT", JSON.stringify({ order: data.order }));
 
       return responseAPI(res, status, data, message);
     } catch (error) {
@@ -18,7 +20,7 @@ export default (app) => {
     }
   });
 
-  app.put("/shipping/:id", verifyToken, async (req, res, next) => {
+  app.put("/:id", verifyToken, async (req, res, next) => {
     try {
       const { status, data, message } = await service.UpdateShippingStatus(req.params, req.body);
 
@@ -28,7 +30,7 @@ export default (app) => {
     }
   });
 
-  app.get("/shipping/:orderId", verifyToken, async (req, res, next) => {
+  app.get("/:orderId", verifyToken, async (req, res, next) => {
     try {
       const { status, data, message } = await service.ReadShippingByOrder(req.params);
 

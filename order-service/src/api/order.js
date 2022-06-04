@@ -12,7 +12,7 @@ export default (app) => {
     try {
       const { status, data, message } = await service.CreateOrder(req.user, req.body);
 
-      publisher.publish("EMPTY_CART", JSON.stringify({ cart: data.cart }));
+      if(data) publisher.publish("EMPTY_CART", JSON.stringify({ cart: data.cart }));
 
       return responseAPI(res, status, data, message);
     } catch (error) {
@@ -43,7 +43,7 @@ export default (app) => {
   app.put("/order/status/:id", verifyToken, async (req, res, next) => {
     try {
       const { status, data, message } = await service.UpdateStatusOrder(req.params, req.body);
-      
+
       return responseAPI(res, status, data, message);
     } catch (error) {
       next(error)
@@ -53,7 +53,7 @@ export default (app) => {
   app.put("/order/cancel/:id", verifyToken, async (req, res, next) => {
     try {
       const { status, data, message } = await service.CancelOrder(req.params);
-      
+
       return responseAPI(res, status, data, message);
     } catch (error) {
       next(error)

@@ -34,9 +34,7 @@ export default (app) => {
       const { firstName, lastName, email, password, gender } = req.body;
       const { status, data, message } = await service.Register({ firstName, lastName, email, password, gender });
 
-      if (data) {
-        publisher.publish('CREATE_CART', JSON.stringify({ id: data._id }));
-      }
+      if (data) publisher.publish('CREATE_CART', JSON.stringify({ id: data._id }));
 
       return responseAPI(res, status, data, message);
     } catch (error) {
