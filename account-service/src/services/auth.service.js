@@ -1,4 +1,5 @@
 import { v4 as uuidv4 } from 'uuid';
+import bcrypt from 'bcrypt';
 
 import { AccountRepository } from "../database";
 import { FormateData, generateSalt, sendEmail, hashPassword, signJWT, comparePassword, verifyRefreshToken } from "../utils";
@@ -35,9 +36,9 @@ class AuthService {
         gender
       });
 
-      let token = await this.repository.FindToken({ user: user._id });
+      let token = await this.repository.FindToken({ user: user._id, type: 'activation' });
       if (!token) {
-        token = await this.repository.CreateToken({ user: user._id, token: uuidv4(), type: "activation" });
+        token = await this.repository.CreateToken({ user: user._id, token: uuidv4(), type: 'activation' });
       } else {
         return FormateData(statusCodes.BAD_REQUEST, null, "Token sudah ada");
       }
@@ -69,7 +70,7 @@ class AuthService {
 
     try {
       const existingAccount = await this.repository.FindAccount({ email });
-      const isPasswordValid = await comparePassword(password, existingAccount.password);
+      const isPasswordValid = comparePassword(password, existingAccount.password);
 
       if (!existingAccount || !isPasswordValid) return FormateData(statusCodes.BAD_REQUEST, null, "Email atau password salah");
       if (!existingAccount.isActive) return FormateData(statusCodes.UNAUTHORIZED, null, "User belum diaktivasi");
@@ -103,6 +104,7 @@ class AuthService {
 
       return FormateData(statusCodes.OK, responseData, "User berhasil login");
     } catch (error) {
+      console.log(error)
       throw new Error('Cannot login');
     }
   }
@@ -114,11 +116,8 @@ class AuthService {
       const existingAccount = await this.repository.FindAccountById(id);
       if (!existingAccount) return FormateData(statusCodes.BAD_REQUEST, null, "User tidak ditemukan");
 
-      const existingToken = await this.repository.FindToken({ user: id });
-      if (!existingToken) return FormateData(statusCodes.BAD_REQUEST, null, "Token sudah kadaluarsa");
-
-      const isTokenValid = existingToken.token === token;
-      if (!isTokenValid) return FormateData(statusCodes.BAD_REQUEST, null, "Token tidak valid");
+      const existingToken = await this.repository.FindToken({ user: id, token, type: 'activation' });
+      if (!existingToken) return FormateData(statusCodes.BAD_REQUEST, null, "Token tidak ditemukan atau kadaluarsa");
 
       const updatedAccount = await this.repository.UpdateAccount({ _id: id, isActive: true });
       await this.repository.DeleteToken({ _id: existingToken._id });
@@ -146,7 +145,7 @@ class AuthService {
       const existingAccount = await this.repository.FindAccount({ email });
       if (!existingAccount) return FormateData(statusCodes.BAD_REQUEST, null, "User tidak ditemukan");
 
-      let token = await this.repository.FindToken({ user: existingAccount._id });
+      let token = await this.repository.FindToken({ user: existingAccount._id, type: 'activation' });
       if (!token) {
         token = await this.repository.CreateToken({ user: existingAccount._id, token: uuidv4(), type: "activation" });
       } else {

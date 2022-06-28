@@ -8,27 +8,8 @@ export default (app) => {
   const service = new AuthService();
   const publisher = redis.createClient();
 
-  /**
-   *  @swagger
-   *  /auth/register:
-   *    post:
-   *      summary: Untuk membuat pengguna/user baru
-   *      description: Untuk membuat pengguna/user baru dengan memasukkan email dan password
-   *      responses:
-   *        200:
-   *          description: User berhasil didaftarkan. Silahkan cek email anda untuk aktivasi
-   *          content:
-   *            application/json:
-   *              schema:
-   *                type: object
-   *                properties:
-   *                  email:
-   *                    type: string
-   *                    example: johndoe@gmail.com
-   *                  password:
-   *                    type: string
-   *                    example: johndoe123
-  */
+  app.get("/", (req, res) => res.send("hello"));
+
   app.post("/auth/register", async (req, res, next) => {
     try {
       const { firstName, lastName, email, password, gender } = req.body;

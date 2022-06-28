@@ -8,7 +8,7 @@ export default (app) => {
   const service = new OrderServices();
   const publisher = redis.createClient();
 
-  app.post("/order", verifyToken, async (req, res, next) => {
+  app.post("/order", async (req, res, next) => {
     try {
       const { status, data, message } = await service.CreateOrder(req.user, req.body);
 

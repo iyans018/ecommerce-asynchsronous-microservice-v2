@@ -13,8 +13,8 @@ const hashPassword = async (password, salt) => {
   return await bcrypt.hash(password, salt);
 }
 
-const comparePassword = async (password, hashedPassword) => {
-  return await bcrypt.compare(password, hashedPassword);
+const comparePassword = (password, hashedPassword) => {
+  return bcrypt.compareSync(password, hashedPassword);
 }
 
 const responseAPI = (res, status, data, message) => {
