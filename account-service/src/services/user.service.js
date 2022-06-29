@@ -115,6 +115,7 @@ class UserService {
 
     try {
       const existingAddress = await this.repository.FindAddress({ _id: addressId });
+      if (!existingAddress) return FormateData(statusCodes.UNAUTHORIZED, null, "Data alamat tidak ditemukan");
       const isRealUserAddress = String(existingAddress.user) === userId;
       if (!isRealUserAddress) return FormateData(statusCodes.UNAUTHORIZED, null, "Anda hanya dapat mengubah alamat anda sendiri");
 
@@ -122,6 +123,7 @@ class UserService {
 
       return FormateData(statusCodes.OK, updatedAddress, "Berhasil update alamat");
     } catch (error) {
+      console.log(error);
       throw new Error("Failed to update the address");
     }
   }
