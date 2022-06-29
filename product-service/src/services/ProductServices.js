@@ -10,9 +10,10 @@ class ProductServices{
 
   async CreateProduct(inputUser, file){
     const { name, description, color, size, price, categories, stock } = inputUser;
+    if (!file) return FormateData(statusCodes.BAD_REQUEST, null, "Tidak ada file yag diupload");
+
     const { filename } = file;
     const { error } = validateProduct({ imageUrl: filename, ...inputUser });
-
     if (error) return FormateData(statusCodes.BAD_REQUEST, null, error.details[0].message);
 
     try {

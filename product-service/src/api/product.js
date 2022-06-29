@@ -5,7 +5,7 @@ import { uploadImage, verifyToken, isAdmin } from "./middleware";
 export default (app) => {
   const service = new ProductServices();
 
-  app.post("/product", verifyToken, isAdmin, uploadImage.single("imageUrl"), async (req, res, next) => {
+  app.post("/create", verifyToken, isAdmin, uploadImage.single("imageUrl"), async (req, res, next) => {
     try {
       const { status, data, message } = await service.CreateProduct(req.body, req.file);
 
@@ -15,17 +15,7 @@ export default (app) => {
     }
   });
 
-  app.get("/product/:id", async (req, res, next) => {
-    try {
-      const { status, data, message } = await service.ReadProduct(req.params);
-
-      responseAPI(res, status, data, message);
-    } catch (error) {
-      next(error);
-    }
-  });
-
-  app.get("/product", async (req, res, next) => {
+  app.get("/list", async (req, res, next) => {
     try {
       const { status, data, message } = await service.ListAllProducts();
 
@@ -35,7 +25,17 @@ export default (app) => {
     }
   });
 
-  app.put("/product/:id", verifyToken, isAdmin, uploadImage.single("imageUrl"), async (req, res, next) => {
+  app.get("/detail/:id", async (req, res, next) => {
+    try {
+      const { status, data, message } = await service.ReadProduct(req.params);
+
+      responseAPI(res, status, data, message);
+    } catch (error) {
+      next(error);
+    }
+  });
+
+  app.put("/edit/:id", verifyToken, isAdmin, uploadImage.single("imageUrl"), async (req, res, next) => {
     try {
       const { status, data, message } = await service.UpdateProduct(req.params, req.body, req.file);
 
@@ -45,7 +45,7 @@ export default (app) => {
     }
   });
 
-  app.delete("/product/:id", verifyToken, isAdmin, async (req, res, next) => {
+  app.delete("/delete/:id", verifyToken, isAdmin, async (req, res, next) => {
     try {
       const { status, data, message } = await service.DeleteProduct(req.params);
 
@@ -65,7 +65,7 @@ export default (app) => {
     }
   });
 
-  app.put("/cart/:id/:productId/add", verifyToken, async (req, res, next) => {
+  app.put("/cart/:productId/add", verifyToken, async (req, res, next) => {
     try {
       const { status, data, message } = await service.AddProductToCart(req.params, req.body, req.user);
 
@@ -75,7 +75,7 @@ export default (app) => {
     }
   });
 
-  app.put("/cart/:id/:productId/remove", verifyToken, async (req, res, next) => {
+  app.put("/cart/:productId/remove", verifyToken, async (req, res, next) => {
     try {
       const { status, data, message } = await service.RemoveProductFromCart(req.params, req.user);
       responseAPI(res, status, data, message);
@@ -84,7 +84,7 @@ export default (app) => {
     }
   });
 
-  app.put("/cart/:id/:productId/plus", verifyToken, async (req, res, next) => {
+  app.put("/cart/:productId/increase", verifyToken, async (req, res, next) => {
     try {
       const { status, data, message } = await service.IncreaseProductQuantityCart(req.params, req.user);
 
@@ -94,7 +94,7 @@ export default (app) => {
     }
   });
 
-  app.put("/cart/:id/:productId/minus", verifyToken, async (req, res, next) => {
+  app.put("/cart/:productId/decrease", verifyToken, async (req, res, next) => {
     try {
       const { status, data, message } = await service.DecreaseProductQuantityCart(req.params, req.user);
       
