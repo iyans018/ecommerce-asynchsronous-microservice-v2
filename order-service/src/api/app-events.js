@@ -13,8 +13,8 @@ export default () => {
         const { order: paidOrder } = JSON.parse(message);
         const { data: orderPaidData } = await service.UpdateStatusOrder({ id: paidOrder }, { status: statusOrder.DIKEMAS });
         if (orderPaidData) {
-          console.log("Cart created");
-          console.log(data);
+          console.log("Order Paid");
+          console.log(orderPaidData);
         }
         break;
       case "ORDER_SENT":

@@ -8,7 +8,7 @@ export default (app) => {
   const service = new OrderServices();
   const publisher = redis.createClient();
 
-  app.post("/order", async (req, res, next) => {
+  app.post("/create", verifyToken, async (req, res, next) => {
     try {
       const { status, data, message } = await service.CreateOrder(req.user, req.body);
 
@@ -20,7 +20,7 @@ export default (app) => {
     }
   });
 
-  app.get("/order", verifyToken, async (req, res, next) => {
+  app.get("/list", verifyToken, async (req, res, next) => {
     try {
       const { status, data, message } = await service.ListUserOrders(req.user);
 
@@ -30,7 +30,7 @@ export default (app) => {
     }
   });
 
-  app.get("/order/:id", verifyToken, async (req, res, next) => {
+  app.get("/detail/:id", verifyToken, async (req, res, next) => {
     try {
       const { status, data, message } = await service.ReadOrder(req.params);
 
@@ -40,7 +40,7 @@ export default (app) => {
     }
   });
 
-  app.put("/order/status/:id", verifyToken, async (req, res, next) => {
+  app.put("/status/:id", verifyToken, async (req, res, next) => {
     try {
       const { status, data, message } = await service.UpdateStatusOrder(req.params, req.body);
 
@@ -50,7 +50,7 @@ export default (app) => {
     }
   });
 
-  app.put("/order/cancel/:id", verifyToken, async (req, res, next) => {
+  app.put("/cancel/:id", verifyToken, async (req, res, next) => {
     try {
       const { status, data, message } = await service.CancelOrder(req.params);
 
