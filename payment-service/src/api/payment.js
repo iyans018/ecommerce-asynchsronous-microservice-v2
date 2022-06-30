@@ -8,7 +8,7 @@ export default (app) => {
   const service = new PaymentServices();
   const publisher = redis.createClient();
 
-  app.post("/payment", async (req, res, next) => {
+  app.post("/", async (req, res, next) => {
     try {
       const { status, data, message } = await service.CreatePayment(req.body);
 
@@ -18,7 +18,7 @@ export default (app) => {
     }
   });
 
-  app.put("/payment/:id", async (req, res, next) => {
+  app.put("/:id", async (req, res, next) => {
     try {
       const { status, data, message } = await service.UpdatePayment(req.params, req.body);
 
@@ -30,7 +30,7 @@ export default (app) => {
     }
   });
 
-  app.get("/payment/:orderId", async (req, res, next) => {
+  app.get("/:orderId", async (req, res, next) => {
     try {
       const { status, data, message } = await service.ReadPaymentByOrder(req.params);
 
