@@ -1,6 +1,11 @@
 import dotEnv from "dotenv";
+import path from "path"
 
-dotEnv.config();
+if (process.env.NODE_ENV !== 'prod') {
+  dotEnv.config({ path: path.resolve(process.cwd(), `.env.${process.env.NODE_ENV}`) });
+} else {
+  dotEnv.config();
+}
 
 export default {
   PORT: process.env.PORT,

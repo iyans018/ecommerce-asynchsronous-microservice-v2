@@ -5,7 +5,10 @@
   "author": "oktavian aji",
   "license": "MIT",
   "scripts": {
-    "start": "nodemon --es-module-specifier-resolution=node src/index.js"
+    "start": "NODE_ENV=prod nodemon --es-module-specifier-resolution=node src/index.js",
+    "dev": "NODE_ENV=dev nodemon --es-module-specifier-resolution=node src/index.js",
+    "testing": "NODE_ENV=test nodemon --es-module-specifier-resolution=node src/index.js",
+    "test": "NODE_ENV=test mocha --es-module-specifier-resolution=node --timeout 10000"
   },
   "dependencies": {
     "cors": "^2.8.5",
@@ -16,5 +19,10 @@
     "mongoose": "^6.3.5",
     "redis": "3.1.2"
   },
-  "type": "module"
+  "type": "module",
+  "devDependencies": {
+    "chai": "^4.3.6",
+    "chai-http": "^4.3.0",
+    "mocha": "^10.0.0"
+  }
 }
