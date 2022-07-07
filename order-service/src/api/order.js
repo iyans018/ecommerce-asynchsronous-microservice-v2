@@ -11,7 +11,6 @@ export default (app, channel) => {
     try {
       const { status, data, message } = await service.CreateOrder(req.user, req.body);
 
-      // if(data) publisher.publish("EMPTY_CART", JSON.stringify({ cart: data.cart }));
       if (data) publishMessage(channel, env.PRODUCT_BINDING_KEY, JSON.stringify({ event: "EMPTY_CART", data }));
 
       return responseAPI(res, status, data, message);

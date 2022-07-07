@@ -186,7 +186,6 @@ class ProductServices{
       
       return FormateData(statusCodes.OK, updatedCart, "Berhasil mengosongkan cart");
     } catch (error) {
-      console.log(error);
       throw new Error('Failed to empty products in cart');
     }
   }

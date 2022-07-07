@@ -115,4 +115,15 @@ export default (app, channel) => {
       next(error);
     }
   });
+
+  app.put("/cart/empty", async (req, res, next) => {
+    try {
+      const { cart } = req.body;
+      const { status, data, message } = await service.EmptyProductsInCart(cart);
+
+      responseAPI(res, status, data, message);
+    } catch (error) {
+      next(error);
+    }
+  });
 }
