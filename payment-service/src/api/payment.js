@@ -20,7 +20,6 @@ export default (app, channel) => {
     try {
       const { status, data, message } = await service.UpdatePayment(req.params, req.body);
 
-      // if (data.status === 1) publisher.publish("ORDER_PAID", JSON.stringify({ order: data.order }));
       if (data.status === 1) publishMessage(channel, env.ORDER_BINDING_KEY, JSON.stringify({ event: "ORDER_PAID", data }));
 
       return responseAPI(res, status, data, message);

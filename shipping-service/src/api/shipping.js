@@ -10,7 +10,6 @@ export default (app, channel) => {
     try {
       const { status, data, message } = await service.CreateShipping(req.user, req.body);
 
-      // if (data) publisher.publish("ORDER_SENT", JSON.stringify({ order: data.order }));
       if (data) publishMessage(channel, env.ORDER_BINDING_KEY, JSON.stringify({ event: "ORDER_SENT", data }));
 
       return responseAPI(res, status, data, message);
