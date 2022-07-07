@@ -1,4 +1,4 @@
-// import redis from "redis";
+import axios from "axios";
 
 import { AuthService } from "../services";
 import { verifyToken } from "./middleware";
@@ -7,7 +7,6 @@ import env from "../config";
 
 export default (app, channel) => {
   const service = new AuthService();
-  // const publisher = redis.createClient();
 
   app.get("/", (req, res) => res.send("hello"));
 
@@ -16,8 +15,11 @@ export default (app, channel) => {
       const { firstName, lastName, email, password, gender } = req.body;
       const { status, data, message } = await service.Register({ firstName, lastName, email, password, gender });
 
-      // if (data) publisher.publish('CREATE_CART', JSON.stringify({ id: data._id }));
-      if (data) publishMessage(channel, env.PRODUCT_BINDING_KEY, JSON.stringify({ event: "CREATE_CART", data }));
+      // if (data) publishMessage(channel, env.PRODUCT_BINDING_KEY, JSON.stringify({ event: "CREATE_CART", data }));
+      if (data) {
+        const response = await axios.post("http://localhost:3000/product/cart", { user: data._id });
+        console.log(response.data);
+      }
 
       return responseAPI(res, status, data, message);
     } catch (error) {

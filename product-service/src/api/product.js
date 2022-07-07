@@ -56,6 +56,17 @@ export default (app, channel) => {
     }
   });
 
+  app.post("/cart", async(req, res, next) => {
+    try {
+      const { user } = req.body;
+      const { status, data, message } = await service.CreateCart(user);
+
+      responseAPI(res, status, data, message);
+    } catch (error) {
+      next(error);
+    }
+  });
+
   app.get("/cart", verifyToken, async (req, res, next) => {
     try {
       const { status, data, message } = await service.ReadUserCart(req.user);
