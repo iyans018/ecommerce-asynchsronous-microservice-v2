@@ -1,18 +1,18 @@
-import redis from "redis";
-
 import { OrderServices } from "../services";
-import { responseAPI } from "../utils";
+import { responseAPI, publishMessage, subscribeMessage } from "../utils";
 import { verifyToken, isAdmin } from "./middleware";
+import env from "../config";
 
-export default (app) => {
+export default (app, channel) => {
   const service = new OrderServices();
-  const publisher = redis.createClient();
+  subscribeMessage(channel, service);
 
   app.post("/create", verifyToken, async (req, res, next) => {
     try {
       const { status, data, message } = await service.CreateOrder(req.user, req.body);
 
-      if(data) publisher.publish("EMPTY_CART", JSON.stringify({ cart: data.cart }));
+      // if(data) publisher.publish("EMPTY_CART", JSON.stringify({ cart: data.cart }));
+      if (data) publishMessage(channel, env.PRODUCT_BINDING_KEY, JSON.stringify({ event: "EMPTY_CART", data }));
 
       return responseAPI(res, status, data, message);
     } catch (error) {

@@ -2,6 +2,7 @@ import { OrderRepository } from "../database";
 import { FormateData } from "../utils";
 import { validateOrder } from "../utils/validation";
 import statusCodes from "../utils/status-codes";
+import statusOrder from "../utils/status-order";
 
 class OrderServices{
   constructor() {
@@ -67,6 +68,7 @@ class OrderServices{
       const order = await this.repository.UpdateStatusOrder(id, { status });
       return FormateData(statusCodes.OK, order, "Berhasil mengubah status order");
     } catch (error) {
+      console.log(error);
       throw new Error('Failed to update status order');
     }
   }
@@ -80,6 +82,22 @@ class OrderServices{
       return FormateData(statusCodes.OK, order, "Berhasil cancel order");
     } catch (error) {
       throw new Error('Failed to cancel order');
+    }
+  }
+
+  async SubscribeEvents(payload) {
+    payload = JSON.parse(payload);
+
+    const { event, data } = payload;
+
+    switch (event) {
+      case 'ORDER_PAID':
+        this.UpdateStatusOrder({ id: data.order }, { status: statusOrder.DIKEMAS });
+        break;
+      case 'ORDER_SENT':
+        this.UpdateStatusOrder({ id: data.order }, { status: statusOrder.DIKIRIM });
+      default:
+        break;
     }
   }
 }

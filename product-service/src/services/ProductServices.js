@@ -89,6 +89,7 @@ class ProductServices{
     try {
       const cart = await this.repository.CreateCart({ user: userId });
       
+      console.log(cart);
       return FormateData(statusCodes.OK, cart, "Berhasil menambahkan cart");
     } catch (error) {
       console.log(error);
@@ -189,6 +190,22 @@ class ProductServices{
     } catch (error) {
       console.log(error);
       throw new Error('Failed to empty products in cart');
+    }
+  }
+
+  async SubscribeEvents(payload) {
+    payload = JSON.parse(payload);
+
+    const { event, data } = payload;
+
+    switch(event) {
+      case 'CREATE_CART':
+        this.CreateCart(data._id);
+        break;
+      case 'EMPTY_CART':
+        this.EmptyProductsInCart(data.cart);
+      default:
+        break;
     }
   }
 }

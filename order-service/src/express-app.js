@@ -2,9 +2,9 @@ import express from "express";
 import cors from "cors";
 import path from "path";
 
-import { order, appEvents } from "./api";
+import { order } from "./api";
 
-export default async (app) => {
+export default async (app, channel) => {
   const __dirname = path.resolve();
 
   app.use(express.json());
@@ -12,6 +12,5 @@ export default async (app) => {
   app.use(cors());
   app.use(express.static(__dirname + '/public'));
 
-  order(app);
-  appEvents();
+  order(app, channel);
 }

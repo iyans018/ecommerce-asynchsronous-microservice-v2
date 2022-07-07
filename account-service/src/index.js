@@ -1,17 +1,17 @@
 import express from "express";
 import expressApp from "./express-app";
 import { databaseConnection } from "./database";
+import { createChannel } from "./utils";
 import env from './config';
 
 const StartServer = async () => {
   const app = express();
 
-  console.log(process.env.NODE_ENV);
-  console.log(process.env.DB_URI);
-
   await databaseConnection();
 
-  await expressApp(app);
+  const channel = await createChannel();
+
+  await expressApp(app, channel);
 
   app.listen(env.PORT, () => {
     console.log("Server is running on port 3001");

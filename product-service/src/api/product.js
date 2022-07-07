@@ -1,9 +1,10 @@
 import { ProductServices } from "../services";
-import { responseAPI } from "../utils";
+import { responseAPI, subscribeMessage } from "../utils";
 import { uploadImage, verifyToken, isAdmin } from "./middleware";
 
-export default (app) => {
+export default (app, channel) => {
   const service = new ProductServices();
+  subscribeMessage(channel, service);
 
   app.post("/create", verifyToken, isAdmin, uploadImage.single("imageUrl"), async (req, res, next) => {
     try {
