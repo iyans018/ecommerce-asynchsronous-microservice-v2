@@ -1,18 +1,17 @@
-import redis from "redis";
-
 import { ShippingServices } from "../services";
-import { responseAPI } from "../utils";
+import { responseAPI, publishMessage } from "../utils";
 import { verifyToken, isAdmin } from "./middleware";
+import env from "../config";
 
-export default (app) => {
+export default (app, channel) => {
   const service = new ShippingServices();
-  const publisher = redis.createClient();
 
   app.post("/", verifyToken, async (req, res, next) => {
     try {
       const { status, data, message } = await service.CreateShipping(req.user, req.body);
 
-      if (data) publisher.publish("ORDER_SENT", JSON.stringify({ order: data.order }));
+      // if (data) publisher.publish("ORDER_SENT", JSON.stringify({ order: data.order }));
+      if (data) publishMessage(channel, env.ORDER_BINDING_KEY, JSON.stringify({ event: "ORDER_SENT", data }));
 
       return responseAPI(res, status, data, message);
     } catch (error) {

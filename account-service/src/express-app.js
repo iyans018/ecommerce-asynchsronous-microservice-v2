@@ -7,7 +7,7 @@ import swaggerUi from "swagger-ui-express";
 
 import { auth, users } from "./api";
 
-export default async (app) => {
+export default async (app, channel) => {
   const __dirname = path.resolve();
   const swaggerDefinition = {
     openapi: '3.0.0',
@@ -36,6 +36,6 @@ export default async (app) => {
   app.use(express.static(__dirname + '/public'));
   app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerSpec));
 
-  auth(app);
+  auth(app, channel);
   users(app);
 }
