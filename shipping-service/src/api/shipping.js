@@ -1,3 +1,4 @@
+import axios from "axios";
 import { ShippingServices } from "../services";
 import { responseAPI, publishMessage } from "../utils";
 import { verifyToken, isAdmin } from "./middleware";
@@ -10,7 +11,11 @@ export default (app, channel) => {
     try {
       const { status, data, message } = await service.CreateShipping(req.user, req.body);
 
-      if (data) publishMessage(channel, env.ORDER_BINDING_KEY, JSON.stringify({ event: "ORDER_SENT", data }));
+      if (data) {
+        const response = await axios.put(`http://localhost:3000/order/status/${data.order}`, { status: 3 });
+        console.log(response.data.message);
+        console.log(response.data);
+      }
 
       return responseAPI(res, status, data, message);
     } catch (error) {

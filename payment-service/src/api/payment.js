@@ -1,3 +1,4 @@
+import axios from "axios";
 import { PaymentServices } from "../services";
 import { responseAPI, publishMessage } from "../utils";
 import { verifyToken, isAdmin } from "./middleware";
@@ -20,7 +21,11 @@ export default (app, channel) => {
     try {
       const { status, data, message } = await service.UpdatePayment(req.params, req.body);
 
-      if (data.status === 1) publishMessage(channel, env.ORDER_BINDING_KEY, JSON.stringify({ event: "ORDER_PAID", data }));
+      if (data.status === 1) {
+        const response = await axios.put(`http://localhost:3003/status/${data.order}`, { status: 2 });
+        console.log(response.data.message);
+        console.log(response.data);
+      }
 
       return responseAPI(res, status, data, message);
     } catch (error) {

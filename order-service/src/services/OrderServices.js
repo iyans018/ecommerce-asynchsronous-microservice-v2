@@ -69,6 +69,7 @@ class OrderServices{
       return FormateData(statusCodes.OK, order, "Berhasil mengubah status order");
     } catch (error) {
       console.log(error);
+      console.log(error);
       throw new Error('Failed to update status order');
     }
   }
