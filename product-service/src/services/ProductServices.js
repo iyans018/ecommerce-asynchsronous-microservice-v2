@@ -89,10 +89,8 @@ class ProductServices{
     try {
       const cart = await this.repository.CreateCart({ user: userId });
       
-      console.log(cart);
       return FormateData(statusCodes.OK, cart, "Berhasil menambahkan cart");
     } catch (error) {
-      console.log(error);
       throw new Error('Failed to create the cart');
     }
   }

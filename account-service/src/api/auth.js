@@ -1,5 +1,3 @@
-import axios from "axios";
-
 import { AuthService } from "../services";
 import { verifyToken } from "./middleware";
 import { responseAPI, publishMessage } from "../utils";
@@ -15,11 +13,7 @@ export default (app, channel) => {
       const { firstName, lastName, email, password, gender } = req.body;
       const { status, data, message } = await service.Register({ firstName, lastName, email, password, gender });
 
-      // if (data) publishMessage(channel, env.PRODUCT_BINDING_KEY, JSON.stringify({ event: "CREATE_CART", data }));
-      if (data) {
-        const response = await axios.post("http://localhost:3000/product/cart", { user: data._id });
-        console.log(response.data);
-      }
+      if (data) publishMessage(channel, env.PRODUCT_BINDING_KEY, JSON.stringify({ event: "CREATE_CART", data }));
 
       return responseAPI(res, status, data, message);
     } catch (error) {
