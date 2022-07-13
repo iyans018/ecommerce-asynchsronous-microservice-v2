@@ -70,9 +70,10 @@ class AuthService {
 
     try {
       const existingAccount = await this.repository.FindAccount({ email });
+      if (!existingAccount) return FormateData(statusCodes.BAD_REQUEST, null, "Email atau password salah");
       const isPasswordValid = comparePassword(password, existingAccount.password);
+      if (!isPasswordValid) return FormateData(statusCodes.BAD_REQUEST, null, "Email atau password salah");
 
-      if (!existingAccount || !isPasswordValid) return FormateData(statusCodes.BAD_REQUEST, null, "Email atau password salah");
       if (!existingAccount.isActive) return FormateData(statusCodes.UNAUTHORIZED, null, "User belum diaktivasi");
 
       const payloadAccessToken = {
@@ -104,7 +105,6 @@ class AuthService {
 
       return FormateData(statusCodes.OK, responseData, "User berhasil login");
     } catch (error) {
-      console.log(error)
       throw new Error('Cannot login');
     }
   }
