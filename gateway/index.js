@@ -13,6 +13,6 @@ app.use('/order', proxy('http://localhost:3003'));
 app.use('/payment', proxy('http://localhost:3004'));
 app.use('/shipping', proxy('http://localhost:3005'));
 
-app.listen(3000, () => {
-    console.log('Gateway is Listening to Port 3000')
+app.listen(9090, () => {
+    console.log('Gateway is Listening to Port 9090')
 });
