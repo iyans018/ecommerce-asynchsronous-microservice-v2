@@ -1,5 +1,4 @@
 import { v4 as uuidv4 } from 'uuid';
-import bcrypt from 'bcrypt';
 
 import { AccountRepository } from "../database";
 import { FormateData, generateSalt, sendEmail, hashPassword, signJWT, comparePassword, verifyRefreshToken } from "../utils";
@@ -83,10 +82,11 @@ class AuthService {
         lastName: existingAccount.lastName,
         isAdmin: existingAccount.isAdmin,
       }
+
       const payloadRefreshToken = {
         user: existingAccount._id,
         token: uuidv4(),
-        expiryDate: new Date().setSeconds(new Date().getSeconds() + env.JWT_REFRESH_EXPIRATION)
+        expiryDate: new Date().setSeconds(new Date().getSeconds() + 43200000)
       }
 
       const accessToken = signJWT(payloadAccessToken);
