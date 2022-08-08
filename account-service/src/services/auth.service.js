@@ -43,7 +43,7 @@ class AuthService {
       }
 
       const message = `${env.BASE_URL}/activate/${user._id}/${token.token}`;
-      await sendEmail(user.email, "Aktivasi Akun", message);
+      // await sendEmail(user.email, "Aktivasi Akun", message);
 
       const responseData = {
         _id: user._id,
@@ -153,7 +153,7 @@ class AuthService {
       }
 
       const message = `${env.BASE_URL}/activate/${existingAccount._id}/${token.token}`;
-      await sendEmail(existingAccount.email, "Aktivasi Akun", message);
+      // await sendEmail(existingAccount.email, "Aktivasi Akun", message);
 
       return FormateData(statusCodes.OK, token, "Link aktivasi berhasil dikirimkan ke email anda");
     } catch (error) {
@@ -175,7 +175,7 @@ class AuthService {
       const token = await this.repository.CreateToken({ user: existingUser._id, token: uuidv4(), type: "reset-password" });
 
       const message = `${env.BASE_URL}/reset-password/${existingUser._id}/${token.token}`;
-      await sendEmail(existingUser.email, "Reset Password", message);
+      // await sendEmail(existingUser.email, "Reset Password", message);
 
       return FormateData(statusCodes.OK, token, "Silahkan cek email anda untuk melakukan reset password");
     } catch (error) {
